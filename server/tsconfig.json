@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "types": ["node"],
+    "allowSyntheticDefaultImports": true,
+    "module": "commonjs"
+  }
+}
