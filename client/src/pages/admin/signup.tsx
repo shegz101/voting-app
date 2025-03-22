@@ -10,20 +10,21 @@ const AdminSignUp: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [fullName, setFullName] = useState<string>("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const result = await adminSignUp(fullName, email, password);
-      console.log(fullName, email, password);
-      alert("Sign Up Successful!");
-      router.push("/admin/login");
-      console.log(result); // Handle the response as needed (e.g., storing the token)
-    } catch (error) {
-      alert("Error signing up");
-    }
-    setFullName("");
-    setEmail("");
-    setPassword("");
+    router.push("/admin/login");
+    // try {
+    //   // const result = await adminSignUp(fullName, email, password);
+    //   // console.log(fullName, email, password);
+    //   // alert("Sign Up Successful!");
+    //   router.push("/admin/login");
+    //   // console.log(result);
+    // } catch (error) {
+    //   alert("Error signing up");
+    // }
+    // setFullName("");
+    // setEmail("");
+    // setPassword("");
   };
 
   const router = useRouter();

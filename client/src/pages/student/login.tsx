@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 const StudentLogin: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    router.push("/voting/votingEvents");
     console.log("Student Log In");
   };
 
@@ -17,7 +18,7 @@ const StudentLogin: React.FC = () => {
     <div className="flex min-h-screen bg-gray-50">
       <div className="w-full sm:w-1/2 flex justify-center items-center">
         <Image
-          objectFit="cover"
+          // objectFit="cover"
           src={AuthBg}
           alt="Auth Image"
           className="w-full h-full object-cover"

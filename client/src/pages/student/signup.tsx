@@ -11,11 +11,14 @@ const StudentSignUp: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [fullName, setFullName] = useState<string>("");
   const [studentId, setStudentId] = useState<string>("");
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-  };
 
   const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    router.push("/student/login");
+  };
+
   const handleStudentLoginNav = () => router.push("/student/login");
 
   return (

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import AuthBg from "../../assets/authimg.png";
-import { adminLogin } from "@/utils/authUtils";
+// import { adminLogin } from "@/utils/authUtils";
 
 import { useRouter } from "next/router";
 import PasswordInput from "@/components/auth/PasswordInput";
@@ -10,19 +10,21 @@ const AdminLogin: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
+  const router = useRouter();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const result = await adminLogin(email, password);
-      console.log(email, password);
-      alert("Logged In Successful!");
-      console.log(result); // Handle the response as needed (e.g., storing the token)
-    } catch (error) {
-      alert("Error signing up");
-    }
+    router.push("/voting/creatingEvents");
+    // try {
+    //   const result = await adminLogin(email, password);
+    //   console.log(email, password);
+    //   alert("Logged In Successful!");
+    //   console.log(result); // Handle the response as needed (e.g., storing the token)
+    // } catch (error) {
+    //   alert("Error signing up");
+    // }
   };
 
-  const router = useRouter();
   const handleAdminLoginNav = () => router.push("/admin/signup");
 
   return (
