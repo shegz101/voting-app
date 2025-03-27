@@ -4,16 +4,18 @@ import Admin from "../models/Admin";
 import Student from "../models/Student";
 import { Request, Response } from "express";
 
+
 const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
 
 // Admin Sign Up
-export const adminSignUp = async (req: any, res: any) => {
-  const { fullName, email, password } = req.body;
+export const adminSignUp = async (req: Request, res: Response): Promise<void> => {
   try {
+    const { fullName, email, password } = req.body;
     const adminExist = await Admin.findOne({ email });
-    if (adminExist)
-      return res.status(400).json({ message: "Admin already exists" });
-
+    if (adminExist){
+      res.status(400).json({ message: "Admin already exists" });
+      return;
+    }
     const hashedPassword = await bcrypt.hash(password, 10);
     const newAdmin = new Admin({ fullName, email, password: hashedPassword });
     await newAdmin.save();
@@ -29,15 +31,24 @@ export const adminSignUp = async (req: any, res: any) => {
 };
 
 // Admin Login
-export const adminLogin = async (req: any, res: any) => {
-  const { email, password } = req.body;
+export const adminLogin = async (req: Request, res: Response): Promise<void> => {
   try {
+    const { email, password } = req.body;
     const admin = await Admin.findOne({ email });
-    if (!admin) return res.status(400).json({ message: "Invalid credentials" });
+    if (!admin){
+      res.status(400).json({ message: "Invalid credentials" });
+      return;
+    }
 
     const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch)
-      return res.status(400).json({ message: "Invalid credentials" });
+    if (!isMatch){
+      res.status(400).json({ message: "Invalid credentials" });
+      return;
+    }
+    // if (password !== admin.password) {
+    //   res.status(404).json({ message: "Invalid credentials"});
+    //   return;
+    // }
 
     const token = jwt.sign({ id: admin._id, role: "admin" }, JWT_SECRET, {
       expiresIn: "1h",
@@ -50,12 +61,14 @@ export const adminLogin = async (req: any, res: any) => {
 };
 
 // Student Sign Up
-export const studentSignUp = async (req: any, res: any) => {
-  const { fullName, matricNo, password } = req.body;
+export const studentSignUp = async (req: Request, res: Response): Promise<void> => {
   try {
+    const { fullName, matricNo, password } = req.body;
     const studentExist = await Student.findOne({ matricNo });
-    if (studentExist)
-      return res.status(400).json({ message: "Student already exists" });
+    if (studentExist){
+      res.status(400).json({ message: "Student already exists" });
+      return;
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newStudent = new Student({
@@ -66,8 +79,7 @@ export const studentSignUp = async (req: any, res: any) => {
     await newStudent.save();
 
     const token = jwt.sign(
-      { id: newStudent._id, role: "student" },
-      JWT_SECRET,
+      { id: newStudent._id, role: "student" },JWT_SECRET,
       { expiresIn: "1h" }
     );
 
@@ -78,16 +90,20 @@ export const studentSignUp = async (req: any, res: any) => {
 };
 
 // Student Login
-export const studentLogin = async (req: any, res: any) => {
-  const { matricNo, password } = req.body;
+export const studentLogin = async (req: Request, res: Response): Promise<void> => {
   try {
+    const { matricNo, password } = req.body;
     const student = await Student.findOne({ matricNo });
-    if (!student)
-      return res.status(400).json({ message: "Invalid credentials" });
+    if (!student){
+      res.status(400).json({ message: "Invalid credentials" });
+      return;
+    }
 
     const isMatch = await bcrypt.compare(password, student.password);
-    if (!isMatch)
-      return res.status(400).json({ message: "Invalid credentials" });
+    if (!isMatch){
+      res.status(400).json({ message: "Invalid credentials" });
+      return;
+    }
 
     const token = jwt.sign({ id: student._id, role: "student" }, JWT_SECRET, {
       expiresIn: "1h",
