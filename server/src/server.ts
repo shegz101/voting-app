@@ -111,7 +111,7 @@ app.use(express.json()); // To parse JSON request body
 app.use("/api/auth", authRoutes);
 app.use("/api/admins", adminRoutes);
 app.use("/api/student", studentRoutes);
-app.use("/api/votes", voteRoutes);
+app.use("/api", voteRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to the Voting App API!" });

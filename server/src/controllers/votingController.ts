@@ -1,13 +1,14 @@
-//polling
-//ENDPOINT: GET /api/admin/voting-events/:eventId/results
+
 import { Request, Response, NextFunction} from "express";
 import Category from "../models/Category";
 import Candidate from "../models/Candidate";
 import VotingEvent from "../models/VotingEvent";
+import Voter from "../models/Voter";
 interface AuthRequest extends Request {
     user?: { id: string; role: "admin" };
 }
-
+//polling
+//ENDPOINT: GET /api/admin/voting-events/:eventId/results
 export const getVotingResults = async (req: Request, res: Response) => {
     try {
         const {eventId} = req.params;
@@ -127,6 +128,27 @@ export const deleteVotingEvent = async (req: AuthRequest, res: Response, next: N
         res.status(500).json({ error: "Failed to delete voting event" });
     }
 };
+
+
+// export const castVote = async (req: Request, res: Response) => {
+//     try {
+//         const { candidateId } = req.body;
+
+//         if (!candidateId) {
+//             return res.status(400).json({ message: "CCandidate ID is required"});
+//         }
+//         const candidate = await Candidate.findById(candidateId);
+//         if (!candidate) {
+//             return res.status(404).json({ message: "Candidate not found"});
+//         }
+//         candidate.votes = (candidate.votes || 0) + 1;
+//         await candidate?.save();
+
+//         res.status(200).json({ message: "Vote cast successfully", candidate});
+//     } catch (error) {
+//         res.status(500).json({ message: "Server error", error});
+//     }
+// };
 
 // export const deleteVotingEvent = async (req: Request, res: Response) => {
 //     try{

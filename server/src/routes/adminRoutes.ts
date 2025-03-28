@@ -83,7 +83,7 @@ router.post("/voting-events/:eventId/categories", async (req, res) => {
 //Endpoint: POST /api/admin/voting-events/:eventId/categories/:categoryId/candidates
 router.post("/voting-events/:eventId/categories/:categoryId/candidates", async (req, res) => { 
     try{
-        const{name, department, profilePicture, manifesto } = req.body;
+        const{name, department, profilePicture, manifesto, eventId } = req.body;
         const{categoryId} = req.params;
 
         const newCandidate = new Candidate({
@@ -91,7 +91,8 @@ router.post("/voting-events/:eventId/categories/:categoryId/candidates", async (
             department,
             profilePicture,
             manifesto,
-            categoryId
+            categoryId,
+            eventId,
         });
 
         await newCandidate.save()

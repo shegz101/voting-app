@@ -77,4 +77,8 @@ router.post ("/votes/:candidateId", async (req: Request, res: Response) => {
         res.status(500).json({ error: "Error casting vote"});
     }
 });
+
+
+
+
 export default router;
