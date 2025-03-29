@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Clock3, PersonStanding } from "lucide-react";
-import React, { useState, useEffect } from "react";
 
 const ongoingEvents = [
   {
@@ -30,7 +29,7 @@ const ongoingEvents = [
 ];
 
 const OngoingEvents: React.FC = () => {
-  const [events, setEvents] = useState(ongoingEvents);
+  // const [events, setEvents] = useState(ongoingEvents);
 
   const backgroundImage =
     "https://th.bing.com/th/id/R.39929737255c6eab4e446641e3b686d0?rik=%2bnI5kXHYss4Cag&riu=http%3a%2f%2f3.bp.blogspot.com%2f-FNx0QPPSHX8%2fUtGPXzJWfgI%2fAAAAAAAACTU%2fzyb7UwB6trE%2fs1600%2fGreen_Land_by_Deinha1974.jpg&ehk=idFLtB9d1vhQCwCvpvoCdfp6QbQPobLcC%2fCS7BUeJPs%3d&risl=&pid=ImgRaw&r=0";
@@ -49,7 +48,7 @@ const OngoingEvents: React.FC = () => {
 
   return (
     <div className="flex flex-wrap gap-20 p-4">
-      {events.map((event, index) => (
+      {ongoingEvents.map((event, index) => (
         <div
           key={index}
           className="w-[380px] cursor-pointer p-4 bg-cover bg-center rounded-lg"

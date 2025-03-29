@@ -28,11 +28,14 @@ const CreatingEvents: React.FC = () => {
     minute: "",
   });
   const [ampm, setAmpm] = React.useState<"AM" | "PM">("AM");
+  const [eventName, setEventName] = React.useState<string>("");
+  const [location, setLocation] = React.useState<string>("");
   const [candidates, setCandidates] = React.useState<
     Array<{ name: string; manifesto: string; image: string }>
   >([]);
   const maxCandidates = 5; // Limit the number of candidates to add
 
+  // Handlers for managing the input fields
   const handleTimeChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     field: "hour" | "minute"
@@ -66,9 +69,39 @@ const CreatingEvents: React.FC = () => {
     }
   };
 
-  const formatTime = (): string => {
-    const { hour, minute } = time;
-    return `${hour}:${minute} ${ampm}`;
+  // const formatTime = (): string => {
+  //   const { hour, minute } = time;
+  //   return `${hour}:${minute} ${ampm}`;
+  // };
+
+  const handleImageUpload = (
+    index: number,
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files ? event.target.files[0] : null;
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      handleCandidateChange(index, "image", imageUrl); // Store the temporary URL
+    }
+  };
+
+  // Handle form submission and log the data
+  const handleSubmit = () => {
+    if (!date) {
+      // Handle the case when date is not provided (optional, depending on your app logic)
+      console.error("Event date is not selected.");
+      return; // Prevent submission or handle accordingly
+    }
+    const eventData = {
+      eventName,
+      endTime: format(date, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"), // Format the end time
+      status: "ongoing",
+      location,
+      candidates,
+    };
+
+    // Log all the event data (including candidates' image URLs)
+    console.log("Event Data Being Sent: ", eventData);
   };
 
   return (
@@ -89,19 +122,29 @@ const CreatingEvents: React.FC = () => {
             <DialogTitle>Create a Voting Event</DialogTitle>
             <DialogDescription>
               <div className="space-y-4">
-                {/* Input fields */}
+                {/* Voting Event Name */}
                 <div className="mt-2">
                   <h1 className="text-black font-bold my-1">
                     Voting Event Name
                   </h1>
-                  <Input placeholder="e.g. CSC Presidential Election" />
+                  <Input
+                    placeholder="e.g. CSC Presidential Election"
+                    value={eventName}
+                    onChange={(e) => setEventName(e.target.value)}
+                  />
                 </div>
 
+                {/* Voting Location */}
                 <div className="mt-2">
                   <p className="text-black font-bold my-1">Voting Location</p>
-                  <Input placeholder="e.g. Unilag" />
+                  <Input
+                    placeholder="e.g. Unilag"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                  />
                 </div>
 
+                {/* Voting Deadline */}
                 <div className="mt-2">
                   <p className="text-black font-bold my-1">Voting Deadline</p>
                   <div className="flex gap-4 w-full">
@@ -201,13 +244,7 @@ const CreatingEvents: React.FC = () => {
                       <div>
                         <input
                           type="file"
-                          onChange={(e) =>
-                            handleCandidateChange(
-                              index,
-                              "image",
-                              e.target.value
-                            )
-                          }
+                          onChange={(e) => handleImageUpload(index, e)}
                           accept="image/*"
                           className="w-full p-2 rounded-md"
                         />
@@ -221,7 +258,10 @@ const CreatingEvents: React.FC = () => {
           {/* Dialog Footer */}
           <DialogFooter className="sm:justify-start">
             <DialogClose asChild>
-              <Button className="text-white bg-blue-600 hover:bg-blue-400 mt-5 w-full">
+              <Button
+                className="text-white bg-blue-600 hover:bg-blue-400 mt-5 w-full"
+                onClick={handleSubmit} // Trigger data logging
+              >
                 Create Event
               </Button>
             </DialogClose>
