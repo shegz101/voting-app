@@ -2,35 +2,42 @@ import { LayoutGrid, CalendarCheck2, ShieldCheck, LogOut } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Avatar from "../../assets/favAvatar.png";
+import { useState, useEffect } from "react";
 
 function SideNav() {
   interface SideNavItem {
     id: number;
-    title?: string;
+    title: string;
     route: string;
     activeImage?: React.ReactNode;
-    onClick?: () => void; // Add onClick handler
+    onClick?: () => void;
   }
 
   const curr_route = usePathname();
 
-  const handleLogout = async () => {
-    window.location.href = "/"; // Redirect to homepage after logout
+  const [role, setRole] = useState<string | null>(null);
+  const [adminEmail, setAdminEmail] = useState<string | null>(null);
+  const [matricNo, setMatricNo] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Accessing localStorage only on the client side
+    const storedRole = localStorage.getItem("votingRole");
+    const storedAdminEmail = localStorage.getItem("adminEmail");
+    const storedMatricNo = localStorage.getItem("matricNumber");
+
+    setRole(storedRole);
+    setAdminEmail(storedAdminEmail);
+    setMatricNo(storedMatricNo);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("votingRole");
+    localStorage.removeItem("adminEmail");
+    localStorage.removeItem("matricNumber");
+    window.location.href = "/"; // Redirect to homepage or login page after logout
   };
 
-  const SideNavData: SideNavItem[] = [
-    {
-      id: 1,
-      title: "Voting Events",
-      activeImage: <LayoutGrid />,
-      route: "/voting/votingEvents",
-    },
-    {
-      id: 2,
-      title: "Creating Events",
-      activeImage: <LayoutGrid />,
-      route: "/voting/creatingEvents",
-    },
+  let SideNavData: SideNavItem[] = [
     {
       id: 3,
       title: "Event Dashboard",
@@ -52,6 +59,31 @@ function SideNav() {
     },
   ];
 
+  // Add role-based items
+  if (role === "student") {
+    SideNavData = [
+      {
+        id: 1,
+        title: "Voting Events",
+        activeImage: <LayoutGrid />,
+        route: "/voting/votingEvents",
+      },
+      ...SideNavData, // Keep the common items for both students and admins
+    ];
+  }
+
+  if (role === "admin") {
+    SideNavData = [
+      {
+        id: 2,
+        title: "Creating Events",
+        activeImage: <LayoutGrid />,
+        route: "/voting/creatingEvents",
+      },
+      ...SideNavData, // Keep the common items for both students and admins
+    ];
+  }
+
   return (
     <div className="h-[90vh] w-1/4 fixed md:h-screen p-3 md:p-5 border-2 shadow-sm">
       <div className="text-4xl font-bold text-blue-600 pl-4">Voters</div>
@@ -59,7 +91,7 @@ function SideNav() {
         <div
           key={data.id}
           className={`flex mt-4 gap-2 items-center font-medium text-gray-500 p-5 cursor-pointer rounded-md hover:text-primary hover:bg-blue-200 ${
-            curr_route == data.route && "text-primary bg-blue-300"
+            curr_route === data.route && "text-primary bg-blue-300"
           }`}
           onClick={
             data.onClick
@@ -76,8 +108,8 @@ function SideNav() {
           <Image src={Avatar} alt="The Avatar Image" />
         </div>
         <div className="text-gray-500 text-wrap">
-          {/*Here, I will later update it to take the student matric no when logged in */}
-          <p>190809050</p>
+          {/* This can be updated to take the student matric number or admin username when logged in */}
+          <p>{role === "student" ? `${matricNo}` : `${adminEmail}`}</p>
         </div>
       </div>
     </div>
