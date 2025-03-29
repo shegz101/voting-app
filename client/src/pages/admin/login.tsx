@@ -33,9 +33,13 @@ const AdminLogin: React.FC = () => {
         toast.success("Login Successful! Redirecting to Events Page...");
         router.push("/voting/creatingEvents");
       }
-    } catch (error: any) {
-      // Handle any errors during login
-      toast.error(error?.response?.data?.message || "Error logging in");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error?.message || "Error logging in");
+      } else {
+        // Handle case where error isn't an instance of Error
+        toast.error("An unexpected error occurred");
+      }
     }
   };
 
@@ -122,7 +126,7 @@ const AdminLogin: React.FC = () => {
         </Formik>
 
         <p className="pt-4 text-gray-600">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <span
             className="text-blue-400 cursor-pointer"
             onClick={handleAdminLoginNav}

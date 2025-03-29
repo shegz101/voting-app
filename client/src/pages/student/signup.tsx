@@ -1,4 +1,5 @@
-import { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import Image from "next/image";
 import AuthBg from "../../assets/authimg.png";
 import { useRouter } from "next/router";

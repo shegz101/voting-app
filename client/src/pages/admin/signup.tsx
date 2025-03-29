@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Image from "next/image";
 import AuthBg from "../../assets/authimg.png";
 import { useRouter } from "next/router";
@@ -39,9 +40,13 @@ const AdminSignUp: React.FC = () => {
           router.push("/admin/login"); // Redirect to login page
           console.log("Admin Sign Up", result);
         }
-      } catch (error: any) {
-        // Error Notification
-        toast.error(error?.response?.data?.message || "Error signing up");
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          toast.error(error?.message || "Error logging in");
+        } else {
+          // Handle case where error isn't an instance of Error
+          toast.error("An unexpected error occurred");
+        }
       }
     } else {
       toast.error("You are not an eligible Admin");

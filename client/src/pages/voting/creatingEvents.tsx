@@ -69,10 +69,10 @@ const CreatingEvents: React.FC = () => {
     }
   };
 
-  const formatTime = (): string => {
-    const { hour, minute } = time;
-    return `${hour}:${minute} ${ampm}`;
-  };
+  // const formatTime = (): string => {
+  //   const { hour, minute } = time;
+  //   return `${hour}:${minute} ${ampm}`;
+  // };
 
   const handleImageUpload = (
     index: number,
@@ -94,7 +94,6 @@ const CreatingEvents: React.FC = () => {
     }
     const eventData = {
       eventName,
-      categories: [], // Example: You can add categories logic
       endTime: format(date, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"), // Format the end time
       status: "ongoing",
       location,

@@ -43,7 +43,7 @@ const VotingDetails: React.FC = () => {
     null
   ); // Track selected candidate
   const router = useRouter();
-  const { id } = router.query;
+  // const { id } = router.query;
 
   // Background image and event data
   const backgroundImage =

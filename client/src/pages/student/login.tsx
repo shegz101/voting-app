@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Image from "next/image";
 import AuthBg from "../../assets/authimg.png";
 import { useRouter } from "next/router";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import * as Yup from "yup";
 import { studentLogin } from "@/utils/authUtils"; // Import the login API call
@@ -122,7 +123,7 @@ const StudentLogin: React.FC = () => {
         </Formik>
 
         <p className="pt-4 text-gray-600">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <span
             className="text-blue-400 cursor-pointer"
             onClick={() => router.push("/student/signup")}
