@@ -110,7 +110,7 @@ app.use(express.json()); // To parse JSON request body
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/admins", adminRoutes);
-app.use("/api/student", studentRoutes);
+app.use("/api/students", studentRoutes);
 app.use("/api", voteRoutes);
 
 app.get("/", (req, res) => {
