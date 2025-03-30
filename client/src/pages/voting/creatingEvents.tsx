@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Clock3, PersonStanding } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -20,6 +20,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
+import { createEvent } from "@/utils/votingUtils";
+import { toast } from "react-toastify";
 
 const CreatingEvents: React.FC = () => {
   const [date, setDate] = React.useState<Date>();
@@ -63,16 +65,38 @@ const CreatingEvents: React.FC = () => {
     setCandidates(updatedCandidates);
   };
 
+  const ongoingEvents = [
+    {
+      id: 1,
+      name: "CSC Presidential Election",
+      location: "Unilag",
+      date: "7/19/2025",
+      time: "10:00 AM",
+      no_of_voters: 1000,
+    },
+    {
+      id: 2,
+      name: "CSC Vice President Election",
+      location: "Unilag",
+      date: "7/19/2025",
+      time: "8:00 AM",
+      no_of_voters: 500,
+    },
+    {
+      id: 3,
+      name: "CSC Secretarial Election",
+      location: "Unilag",
+      date: "7/19/2025",
+      time: "10:00 AM",
+      no_of_voters: 300,
+    },
+  ];
+
   const addCandidate = () => {
     if (candidates.length < maxCandidates) {
       setCandidates([...candidates, { name: "", manifesto: "", image: "" }]);
     }
   };
-
-  // const formatTime = (): string => {
-  //   const { hour, minute } = time;
-  //   return `${hour}:${minute} ${ampm}`;
-  // };
 
   const handleImageUpload = (
     index: number,
@@ -85,24 +109,58 @@ const CreatingEvents: React.FC = () => {
     }
   };
 
-  // Handle form submission and log the data
-  const handleSubmit = () => {
+  const status = "ongoing";
+
+  const handleSubmit = async () => {
     if (!date) {
       // Handle the case when date is not provided (optional, depending on your app logic)
       console.error("Event date is not selected.");
       return; // Prevent submission or handle accordingly
     }
-    const eventData = {
-      eventName,
-      endTime: format(date, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"), // Format the end time
-      status: "ongoing",
-      location,
-      candidates,
-    };
+    let endTime = format(date, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    try {
+      // Call API here with student login function
+      const result = await createEvent(
+        eventName,
+        endTime,
+        status,
+        location,
+        candidates
+      );
 
-    // Log all the event data (including candidates' image URLs)
-    console.log("Event Data Being Sent: ", eventData);
+      if (result) {
+        // If login is successful, store the role in localStorage
+        toast.success("Voting Events created successfully");
+        console.log("Event Data Being Sent: ", result?.data);
+        // Redirect to voting events page
+      } else {
+        toast.error(result?.error || "Error creating an event");
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Error logging in");
+    }
   };
+
+  // Handle form submission and log the data
+
+  //   // Log all the event data (including candidates' image URLs)
+  //   console.log("Event Data Being Sent: ", eventData);
+  // };
+
+  const backgroundImage =
+    "https://th.bing.com/th/id/R.39929737255c6eab4e446641e3b686d0?rik=%2bnI5kXHYss4Cag&riu=http%3a%2f%2f3.bp.blogspot.com%2f-FNx0QPPSHX8%2fUtGPXzJWfgI%2fAAAAAAAACTU%2fzyb7UwB6trE%2fs1600%2fGreen_Land_by_Deinha1974.jpg&ehk=idFLtB9d1vhQCwCvpvoCdfp6QbQPobLcC%2fCS7BUeJPs%3d&risl=&pid=ImgRaw&r=0";
+
+  // Helper function to calculate hours remaining
+  const calculateTimeLeft = (eventTime: string) => {
+    const eventDate = new Date(`${eventTime} UTC`);
+    const currentDate = new Date();
+    const diff = eventDate.getTime() - currentDate.getTime();
+    return Math.floor(diff / (1000 * 60 * 60)); // Convert to hours
+  };
+
+  function formatNumberWithCommas(number: number): string {
+    return number.toLocaleString(); // This will automatically add commas to large numbers
+  }
 
   return (
     <div className="text-black">
@@ -268,6 +326,45 @@ const CreatingEvents: React.FC = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <div className="flex flex-wrap gap-20 p-4">
+        {ongoingEvents.map((event, index) => (
+          <div
+            key={index}
+            className="w-[380px] cursor-pointer p-4 bg-cover bg-center rounded-lg"
+            style={{
+              backgroundImage: `url(${backgroundImage})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              height: "300px",
+              position: "relative",
+            }}
+          >
+            {/* Event Name and Location */}
+            <div className="absolute top-0 left-0 bg-opacity-50 text-white p-2 rounded-br-lg">
+              <h3 className="text-lg font-bold">{event.name}</h3>
+              <p>{event.location}</p>
+            </div>
+
+            {/* Event Info */}
+            <div className="absolute bottom-0 left-0 w-full bg-blue-600 p-2 text-white flex justify-between items-center rounded-b-lg">
+              <div>
+                <p className="flex gap-2 items-center">
+                  <Clock3 />
+                  {calculateTimeLeft(`${event.date} ${event.time}`)} hours left
+                </p>
+                <p className="flex gap-2 items-center">
+                  <PersonStanding />{" "}
+                  {formatNumberWithCommas(event.no_of_voters)} voters
+                </p>
+              </div>
+              <button className="bg-red-400 cursor-pointer text-black px-4 py-2 rounded-lg">
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

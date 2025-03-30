@@ -1,5 +1,7 @@
 import Link from "next/link";
+// import axios from "axios";
 import { Clock3, PersonStanding } from "lucide-react";
+// import { useState, useEffect } from "react";
 
 const ongoingEvents = [
   {
@@ -29,7 +31,35 @@ const ongoingEvents = [
 ];
 
 const OngoingEvents: React.FC = () => {
-  // const [events, setEvents] = useState(ongoingEvents);
+  // const [events, setEvents] = useState<any[]>([]);
+  // const [loading, setLoading] = useState<boolean>(true);
+  // const [error, setError] = useState<string | null>(null);
+
+  // useEffect(() => {
+  //   const fetchVotingEvents = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         "http://localhost:5000/api/student/voting-events"
+  //       );
+  //       setEvents(response.data); // Assuming the response data contains the list of events
+  //       console.log(response.data);
+  //       setLoading(false);
+  //     } catch (err) {
+  //       setError("Failed to fetch events.");
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchVotingEvents();
+  // }, []); // Empty dependency array means this will run once when the component mounts
+
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
+
+  // if (error) {
+  //   return <div>{error}</div>;
+  // }
 
   const backgroundImage =
     "https://th.bing.com/th/id/R.39929737255c6eab4e446641e3b686d0?rik=%2bnI5kXHYss4Cag&riu=http%3a%2f%2f3.bp.blogspot.com%2f-FNx0QPPSHX8%2fUtGPXzJWfgI%2fAAAAAAAACTU%2fzyb7UwB6trE%2fs1600%2fGreen_Land_by_Deinha1974.jpg&ehk=idFLtB9d1vhQCwCvpvoCdfp6QbQPobLcC%2fCS7BUeJPs%3d&risl=&pid=ImgRaw&r=0";
