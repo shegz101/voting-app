@@ -17,12 +17,17 @@ router.post("/voting-events", async (req: Request, res: Response) => {
   try {
     const { eventName, endTime, location } = req.body;
     if (!eventName || !endTime || !location) {
-      res
-        .status(400)
-        .json({ error: "All fields (eventName, location, endTime) are required." });
+      res.status(400).json({
+        error: "All fields (eventName, location, endTime) are required.",
+      });
       return;
     }
-    const newEvent = new VotingEvent({ eventName, endTime, location, candidates: [] });
+    const newEvent = new VotingEvent({
+      eventName,
+      endTime,
+      location,
+      candidates: [],
+    });
     await newEvent.save();
     res.status(201).json(newEvent);
   } catch (error: any) {
@@ -42,32 +47,37 @@ router.get("/votes/logs", async (req: Request, res: Response) => {
 });
 
 // NEW: Add a candidate to a voting event (replacing the category/candidate endpoints)
-router.post("/voting-events/:eventId/candidates", async (req: Request, res: Response) => {
-  try {
-    const { eventId } = req.params;
-    const { name, manifesto, profilePic } = req.body;
-    if (!name) {
-      res.status(400).json({ error: "Candidate name is required" });
-      return;
+router.post(
+  "/voting-events/:eventId/candidates",
+  async (req: Request, res: Response) => {
+    try {
+      const { eventId } = req.params;
+      const { name, manifesto, profilePic } = req.body;
+      if (!name) {
+        res.status(400).json({ error: "Candidate name is required" });
+        return;
+      }
+      const candidate = { name, manifesto, profilePic, votes: 0 };
+      const updatedEvent = await VotingEvent.findByIdAndUpdate(
+        eventId,
+        { $push: { candidates: candidate } },
+        { new: true }
+      );
+      if (!updatedEvent) {
+        res.status(404).json({ error: "Voting event not found" });
+        return;
+      }
+      res.status(201).json({
+        message: "Candidate added successfully",
+        candidate,
+        event: updatedEvent,
+      });
+    } catch (error: any) {
+      console.error("Error adding candidate", error);
+      res.status(500).json({ error: error.message || "Internal server error" });
     }
-    const candidate = { name, manifesto, profilePic, votes: 0 };
-    const updatedEvent = await VotingEvent.findByIdAndUpdate(
-      eventId,
-      { $push: { candidates: candidate } },
-      { new: true }
-    );
-    if (!updatedEvent) {
-      res.status(404).json({ error: "Voting event not found" });
-      return;
-    }
-    res
-      .status(201)
-      .json({ message: "Candidate added successfully", candidate, event: updatedEvent });
-  } catch (error: any) {
-    console.error("Error adding candidate", error);
-    res.status(500).json({ error: error.message || "Internal server error" });
   }
-});
+);
 
 // GET: Get all voting events (with candidates embedded)
 router.get("/voting-events", async (req: Request, res: Response) => {
@@ -94,22 +104,25 @@ router.get("/voting-events/:eventId", async (req: Request, res: Response) => {
 });
 
 // GET: Admin dashboard – Get voting results (candidate names and votes)
-router.get("/voting-events/:eventId/results", async (req: Request, res: Response) => {
-  try {
-    const event = await VotingEvent.findById(req.params.eventId);
-    if (!event) {
-      res.status(404).json({ error: "Voting event not found" });
-      return;
+router.get(
+  "/voting-events/:eventId/results",
+  async (req: Request, res: Response) => {
+    try {
+      const event = await VotingEvent.findById(req.params.eventId);
+      if (!event) {
+        res.status(404).json({ error: "Voting event not found" });
+        return;
+      }
+      const results = event.candidates.map((candidate) => ({
+        name: candidate.name,
+        votes: candidate.votes,
+      }));
+      res.json(results);
+    } catch (error) {
+      res.status(500).json({ error: "Error fetching voting results" });
     }
-    const results = event.candidates.map(candidate => ({
-      name: candidate.name,
-      votes: candidate.votes,
-    }));
-    res.json(results);
-  } catch (error) {
-    res.status(500).json({ error: "Error fetching voting results" });
   }
-});
+);
 
 // DELETE: Reset all votes for an event’s candidates (repurposing the old /votes/reset/:categoryId endpoint)
 router.delete("/votes/reset/:eventId", async (req: Request, res: Response) => {
@@ -120,7 +133,7 @@ router.delete("/votes/reset/:eventId", async (req: Request, res: Response) => {
       res.status(404).json({ error: "Voting event not found" });
       return;
     }
-    event.candidates.forEach(candidate => (candidate.votes = 0));
+    event.candidates.forEach((candidate) => (candidate.votes = 0));
     await event.save();
     res.json({ message: "Votes reset successfully." });
   } catch (error) {
