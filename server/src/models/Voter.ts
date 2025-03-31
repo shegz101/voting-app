@@ -2,13 +2,13 @@ import mongoose, {Schema, Document} from "mongoose";
 
 interface Ivoter extends Document {
     voterId: string;
-    categoryId: mongoose.Types.ObjectId;
+    candidateId: mongoose.Types.ObjectId;
     // To track when each vote was cast
     createdAt: Date;
 }
 const VoterSchema = new Schema<Ivoter>({
     voterId: {type: String, required: true},
-    categoryId: {type: Schema.Types.ObjectId, ref: "Category", required: true},
+    candidateId: {type: Schema.Types.ObjectId, ref: "Candidate", required: true},
     //To store the voting time
     createdAt: { type: Date, default: Date.now }
 });
