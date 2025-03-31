@@ -29,6 +29,8 @@ const StudentLogin: React.FC = () => {
         // If login is successful, store the role in localStorage
         localStorage.setItem("votingRole", "student");
         localStorage.setItem("matricNumber", values.matricNo);
+        // save admin token to localStorage
+        localStorage.setItem("studentToken", result?.token || "");
         toast.success("Login Successful! Redirecting to voting events...");
         router.push("/voting/votingEvents"); // Redirect to voting events page
       } else {

@@ -20,8 +20,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { createEvent } from "@/utils/votingUtils";
-import { toast } from "react-toastify";
+import {
+  createEvent,
+  addCandidates,
+  getVotingEvents,
+  deleteEvent,
+} from "@/utils/votingUtils";
+import { toast, ToastContainer } from "react-toastify";
+import { useState } from "react";
 
 const CreatingEvents: React.FC = () => {
   const [date, setDate] = React.useState<Date>();
@@ -29,6 +35,9 @@ const CreatingEvents: React.FC = () => {
     hour: "",
     minute: "",
   });
+  const [events, setEvents] = useState<any[]>([]); // Store events in state
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
   const [ampm, setAmpm] = React.useState<"AM" | "PM">("AM");
   const [eventName, setEventName] = React.useState<string>("");
   const [location, setLocation] = React.useState<string>("");
@@ -36,6 +45,26 @@ const CreatingEvents: React.FC = () => {
     Array<{ name: string; manifesto: string; image: string }>
   >([]);
   const maxCandidates = 5; // Limit the number of candidates to add
+
+  React.useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const data = await getVotingEvents(); // Call the utility function
+        console.log("Fetched Events: ", data); // Log the fetched events for debugging
+        setEvents(data); // Set events data to state
+      } catch (error) {
+        setError("Failed to fetch voting events.");
+      } finally {
+        setLoading(false); // Stop loading
+      }
+    };
+
+    fetchEvents(); // Fetch the events when the component mounts
+  }, []);
+
+  const refreshData = async () => {
+    getVotingEvents();
+  };
 
   // Handlers for managing the input fields
   const handleTimeChange = (
@@ -52,6 +81,20 @@ const CreatingEvents: React.FC = () => {
     setAmpm(e.target.value as "AM" | "PM");
   };
 
+  const getTimeLeft = (endDate: string) => {
+    // Parse the end date string (ISO format) into a JavaScript Date object
+    const deadline = new Date(endDate);
+
+    // Calculate the difference between now and the end time
+    const timeLeftInMs = deadline.getTime() - new Date().getTime();
+
+    // Convert milliseconds to hours (1 hour = 1000 ms * 60 seconds * 60 minutes)
+    const hoursLeft = Math.floor(timeLeftInMs / (1000 * 60 * 60));
+
+    // You can return hours left
+    return hoursLeft;
+  };
+
   const handleCandidateChange = (
     index: number,
     field: "name" | "manifesto" | "image",
@@ -64,33 +107,6 @@ const CreatingEvents: React.FC = () => {
     };
     setCandidates(updatedCandidates);
   };
-
-  const ongoingEvents = [
-    {
-      id: 1,
-      name: "CSC Presidential Election",
-      location: "Unilag",
-      date: "7/19/2025",
-      time: "10:00 AM",
-      no_of_voters: 1000,
-    },
-    {
-      id: 2,
-      name: "CSC Vice President Election",
-      location: "Unilag",
-      date: "7/19/2025",
-      time: "8:00 AM",
-      no_of_voters: 500,
-    },
-    {
-      id: 3,
-      name: "CSC Secretarial Election",
-      location: "Unilag",
-      date: "7/19/2025",
-      time: "10:00 AM",
-      no_of_voters: 300,
-    },
-  ];
 
   const addCandidate = () => {
     if (candidates.length < maxCandidates) {
@@ -130,33 +146,60 @@ const CreatingEvents: React.FC = () => {
 
       if (result) {
         // If login is successful, store the role in localStorage
-        toast.success("Voting Events created successfully");
-        console.log("Event Data Being Sent: ", result?.data);
+        toast.success(result?.message || "Event created successfully");
+        console.log("Event Data Being Sent to server: ", result);
+
+        // add a candidate
+        try {
+          for (const candidate of candidates) {
+            const candidateResult = await addCandidates(
+              candidate.name,
+              candidate.manifesto,
+              candidate.image,
+              result?._id // Assuming the event ID is returned in the result
+            );
+            console.log(
+              "Candidate Data Being Sent to server: ",
+              candidateResult
+            );
+          }
+          toast.success("Candidates added successfully");
+        } catch {
+          toast.error("Error adding candidates");
+        }
         // Redirect to voting events page
       } else {
         toast.error(result?.error || "Error creating an event");
       }
+      refreshData(); // Refresh the events after creating a new one
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Error logging in");
     }
+    setEventName("");
+    setLocation("");
+    setDate(undefined);
+    setTime({ hour: "", minute: "" }); // Reset time state
+    setCandidates([]); // Reset candidates state
+    setAmpm("AM"); // Reset AM/PM state
   };
 
-  // Handle form submission and log the data
-
-  //   // Log all the event data (including candidates' image URLs)
-  //   console.log("Event Data Being Sent: ", eventData);
-  // };
+  const handleDelete = async (id: string) => {
+    try {
+      setLoading(true);
+      const result = await deleteEvent(id); // Call the deleteEvent function
+      console.log(result); // Handle success (e.g., show a success message)
+      toast.success(result.message || "Event deleted successfully");
+      refreshData(); // Refresh the events after deletion
+    } catch (error: any) {
+      setError("Failed to delete event");
+      toast.error("Error deleting event:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const backgroundImage =
     "https://th.bing.com/th/id/R.39929737255c6eab4e446641e3b686d0?rik=%2bnI5kXHYss4Cag&riu=http%3a%2f%2f3.bp.blogspot.com%2f-FNx0QPPSHX8%2fUtGPXzJWfgI%2fAAAAAAAACTU%2fzyb7UwB6trE%2fs1600%2fGreen_Land_by_Deinha1974.jpg&ehk=idFLtB9d1vhQCwCvpvoCdfp6QbQPobLcC%2fCS7BUeJPs%3d&risl=&pid=ImgRaw&r=0";
-
-  // Helper function to calculate hours remaining
-  const calculateTimeLeft = (eventTime: string) => {
-    const eventDate = new Date(`${eventTime} UTC`);
-    const currentDate = new Date();
-    const diff = eventDate.getTime() - currentDate.getTime();
-    return Math.floor(diff / (1000 * 60 * 60)); // Convert to hours
-  };
 
   function formatNumberWithCommas(number: number): string {
     return number.toLocaleString(); // This will automatically add commas to large numbers
@@ -164,6 +207,7 @@ const CreatingEvents: React.FC = () => {
 
   return (
     <div className="text-black">
+      {error && <div className="text-red-500 mt-2">{error}</div>}
       <Dialog>
         <DialogTrigger asChild>
           <div
@@ -175,7 +219,7 @@ const CreatingEvents: React.FC = () => {
           </div>
         </DialogTrigger>
 
-        <DialogContent>
+        <DialogContent className="overflow-y-auto overflow-x-hidden max-h-[85vh]">
           <DialogHeader>
             <DialogTitle>Create a Voting Event</DialogTitle>
             <DialogDescription>
@@ -328,7 +372,7 @@ const CreatingEvents: React.FC = () => {
       </Dialog>
 
       <div className="flex flex-wrap gap-20 p-4">
-        {ongoingEvents.map((event, index) => (
+        {events.map((event, index) => (
           <div
             key={index}
             className="w-[380px] cursor-pointer p-4 bg-cover bg-center rounded-lg"
@@ -342,8 +386,9 @@ const CreatingEvents: React.FC = () => {
           >
             {/* Event Name and Location */}
             <div className="absolute top-0 left-0 bg-opacity-50 text-white p-2 rounded-br-lg">
-              <h3 className="text-lg font-bold">{event.name}</h3>
+              <h3 className="text-lg font-bold">{event.eventName}</h3>
               <p>{event.location}</p>
+              <p className="text-xl font-medium">Status: {event.status}</p>
             </div>
 
             {/* Event Info */}
@@ -351,20 +396,25 @@ const CreatingEvents: React.FC = () => {
               <div>
                 <p className="flex gap-2 items-center">
                   <Clock3 />
-                  {calculateTimeLeft(`${event.date} ${event.time}`)} hours left
+                  {getTimeLeft(event.endTime)} hour(s) left
                 </p>
-                <p className="flex gap-2 items-center">
+                {/* <p className="flex gap-2 items-center">
                   <PersonStanding />{" "}
                   {formatNumberWithCommas(event.no_of_voters)} voters
-                </p>
+                </p> */}
               </div>
-              <button className="bg-red-400 cursor-pointer text-black px-4 py-2 rounded-lg">
-                Delete
+              <button
+                onClick={() => handleDelete(event._id)}
+                disabled={loading}
+                className="bg-red-500 text-white px-4 py-2 rounded-md"
+              >
+                {loading ? "Deleting..." : "Delete Event"}
               </button>
             </div>
           </div>
         ))}
       </div>
+      <ToastContainer />
     </div>
   );
 };

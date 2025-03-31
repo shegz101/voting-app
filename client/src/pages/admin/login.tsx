@@ -27,10 +27,13 @@ const AdminLogin: React.FC = () => {
       const result = await adminLogin(values.email, values.password);
 
       if (result) {
+        console.log(result); // Log the result for debugging
+        // save admin token to localStorage
+        localStorage.setItem("adminToken", result?.token || "");
         // Set the role in localStorage if login is successful
         localStorage.setItem("votingRole", "admin");
         localStorage.setItem("adminEmail", values.email);
-        toast.success("Login Successful! Redirecting to Events Page...");
+        toast.success(result?.message || "Login Successful! Redirecting...");
         router.push("/voting/creatingEvents");
       }
     } catch (error: unknown) {
@@ -42,8 +45,6 @@ const AdminLogin: React.FC = () => {
       }
     }
   };
-
-  const handleAdminLoginNav = () => router.push("/admin/signup");
 
   return (
     <div className="flex min-h-screen bg-gray-50">

@@ -34,6 +34,8 @@ function SideNav() {
     localStorage.removeItem("votingRole");
     localStorage.removeItem("adminEmail");
     localStorage.removeItem("matricNumber");
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("studentToken");
     window.location.href = "/"; // Redirect to homepage or login page after logout
   };
 

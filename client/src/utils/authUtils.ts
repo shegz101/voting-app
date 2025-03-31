@@ -14,7 +14,7 @@ export const adminSignUp = async (
         password,
       }
     );
-    return response.data; // Return the response from the API
+    return response?.data; // Return the response from the API
   } catch (error: unknown) {
     if (error instanceof Error) {
       throw new Error(error.message); // Handle the error
@@ -28,7 +28,7 @@ export const adminLogin = async (email: string, password: string) => {
       "http://localhost:5000/api/auth/admins/login",
       { email, password }
     );
-    return response.data; // Assuming backend sends data with success and message
+    return response?.data; // Assuming backend sends data with success and message
   } catch (error: unknown) {
     if (error instanceof Error) {
       throw new Error(error.message); // Handle the error
@@ -51,7 +51,7 @@ export const studentSignUp = async (
       }
     );
 
-    return response.data; // Successful response
+    return response?.data; // Successful response
   } catch (error: unknown) {
     if (error instanceof Error) {
       throw new Error(error.message); // Handle the error
@@ -69,7 +69,7 @@ export const studentLogin = async (matricNo: string, password: string) => {
       }
     );
 
-    return response.data; // Successful response (store token and other data if needed)
+    return response?.data; // Successful response (store token and other data if needed)
   } catch (error: unknown) {
     if (error instanceof Error) {
       throw new Error(error.message); // Handle the error
