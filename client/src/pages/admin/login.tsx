@@ -124,16 +124,6 @@ const AdminLogin: React.FC = () => {
             </Form>
           )}
         </Formik>
-
-        <p className="pt-4 text-gray-600">
-          Don&apos;t have an account?{" "}
-          <span
-            className="text-blue-400 cursor-pointer"
-            onClick={handleAdminLoginNav}
-          >
-            Sign Up
-          </span>
-        </p>
       </div>
       <ToastContainer />
     </div>

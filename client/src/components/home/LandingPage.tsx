@@ -7,7 +7,7 @@ const LandingPage: React.FC = () => {
   const [showCenterDropdown, setCenterShowDropdown] = useState<boolean>(false);
 
   const router = useRouter();
-  const handleAdminClick = () => router.push("/admin/signup");
+  const handleAdminClick = () => router.push("/admin/login");
   const handleStudentClick = () => router.push("/student/signup");
 
   const toggleDropdown = (): void => setShowDropdown(!showDropdown);
