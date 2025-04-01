@@ -263,10 +263,10 @@ router.get("/voting-events/:eventId/candidates", async (req, res) => {
 });
 
 // Optionally, if you need a public results endpoint:
-router.get("/voting-events/:eventId/results/public", async (req, res) => {
+router.get("/voting-events/:eventId/results", async (req, res) => {
   try {
     const { eventId } = req.params;
-    const event = await VotingEvent.findById(eventId);
+    const event = await VotingEvent.findById(req.params.eventId);
     if (!event) {
       res.status(404).json({ error: "Voting event not found" });
       return;
