@@ -64,10 +64,6 @@ const VotingDetails: React.FC = () => {
   const backgroundImage =
     "https://th.bing.com/th/id/R.39929737255c6eab4e446641e3b686d0?rik=%2bnI5kXHYss4Cag&riu=http%3a%2f%2f3.bp.blogspot.com%2f-FNx0QPPSHX8%2fUtGPXzJWfgI%2fAAAAAAAACTU%2fzyb7UwB6trE%2fs1600%2fGreen_Land_by_Deinha1974.jpg&ehk=idFLtB9d1vhQCwCvpvoCdfp6QbQPobLcC%2fCS7BUeJPs%3d&risl=&pid=ImgRaw&r=0";
 
-  function formatNumberWithCommas(number: number): string {
-    return number.toLocaleString(); // This will automatically add commas to large numbers
-  }
-
   // Trigger this function if a vote was successful
   const voteSuccess = async (
     name: string,
@@ -104,7 +100,7 @@ const VotingDetails: React.FC = () => {
   const selectedCandidateId =
     eventData?.candidates.find((c) => c._id === selectedCandidate)?._id || "";
 
-  const voterId = localStorage.getItem("studentId") || "190805093"; // Get the voter ID from local storage
+  const voterId = localStorage.getItem("matricNumber") || "190805093"; // Get the voter ID from local storage
   console.log("Selected Candidate ID: ", selectedCandidateId); // Log the selected candidate ID
 
   if (loading) {
@@ -124,7 +120,7 @@ const VotingDetails: React.FC = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-2 md:p-4">
       {/* Header */}
       <ToastContainer />
       <div
@@ -145,9 +141,11 @@ const VotingDetails: React.FC = () => {
             <ChevronLeft width={50} height={50} />
           </button>
         </div>
-        <div className="absolute top-20 text-center left-50 bg-opacity-50 text-white p-2 rounded-br-lg">
+        <div className="absolute top-20 text-center md:left-50 bg-opacity-50 text-white p-2 rounded-br-lg">
           {/* Conditional rendering for event data */}
-          <h3 className="text-4xl font-bold">{eventData?.eventName}</h3>
+          <h3 className="text-2xl md:text-4xl font-bold">
+            {eventData?.eventName}
+          </h3>
           <p className="text-2xl">{eventData?.location}</p>
         </div>
       </div>
@@ -167,7 +165,7 @@ const VotingDetails: React.FC = () => {
       </div>
 
       {/* Candidates */}
-      <div className="mb-6">
+      <div className="mb-6 mt-6">
         <h2 className="text-xl text-blue-500 font-semibold mb-4">
           Select a Candidate
         </h2>

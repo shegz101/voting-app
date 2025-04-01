@@ -28,6 +28,10 @@ const OngoingEvents: React.FC = () => {
     return <div>Loading...</div>;
   }
 
+  if (events.filter((event) => event.status === "ongoing").length === 0) {
+    return <div>No Ongoing Events!!</div>;
+  }
+
   if (error) {
     return <div>{error}</div>;
   }
@@ -35,12 +39,11 @@ const OngoingEvents: React.FC = () => {
   const backgroundImage =
     "https://th.bing.com/th/id/R.39929737255c6eab4e446641e3b686d0?rik=%2bnI5kXHYss4Cag&riu=http%3a%2f%2f3.bp.blogspot.com%2f-FNx0QPPSHX8%2fUtGPXzJWfgI%2fAAAAAAAACTU%2fzyb7UwB6trE%2fs1600%2fGreen_Land_by_Deinha1974.jpg&ehk=idFLtB9d1vhQCwCvpvoCdfp6QbQPobLcC%2fCS7BUeJPs%3d&risl=&pid=ImgRaw&r=0";
 
-  // Helper function to calculate hours remaining
-  const calculateTimeLeft = (eventTime: string) => {
-    const eventDate = new Date(`${eventTime} UTC`);
-    const currentDate = new Date();
-    const diff = eventDate.getTime() - currentDate.getTime();
-    return Math.floor(diff / (1000 * 60 * 60)); // Convert to hours
+  const getTotalVoteForEvent = (event: any) => {
+    return event.candidates.reduce(
+      (total: number, candidate: any) => total + candidate.votes,
+      0
+    );
   };
 
   function formatNumberWithCommas(number: number): string {
@@ -90,6 +93,10 @@ const OngoingEvents: React.FC = () => {
                 <p className="flex gap-2 items-center">
                   <Clock3 />
                   {getTimeLeft(event.endTime)} hour(s) left
+                </p>
+                <p className="flex gap-2 items-center">
+                  <PersonStanding />{" "}
+                  {formatNumberWithCommas(getTotalVoteForEvent(event))} voters
                 </p>
               </div>
               <Link href={`/voting/${event._id}`}>

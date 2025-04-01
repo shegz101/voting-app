@@ -127,6 +127,35 @@ export const voteForCandidate = async (
 };
 
 // get votung event by id
+export const getAllVotingEvents = async (): Promise<any> => {
+  try {
+    // Get the token from localStorage
+    const token = localStorage.getItem("adminToken");
+
+    if (!token) {
+      throw new Error("Authentication token is missing");
+    }
+
+    // API URL with dynamic eventId
+    const apiUrl = `http://localhost:5000/api/admins/voting-events`;
+
+    // Make the GET request with the Bearer token
+    const response = await axios.get(apiUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    // Return the response data (e.g., voting event details)
+    return response.data;
+  } catch (error: any) {
+    // Handle errors (e.g., network issues, API errors)
+    console.error("Error fetching the voting event:", error);
+    throw error;
+  }
+};
+
+// get votung event by id
 export const getVotingEventById = async (eventId: string): Promise<any> => {
   try {
     // Get the token from localStorage

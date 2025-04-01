@@ -18,7 +18,7 @@ const LandingPage: React.FC = () => {
   return (
     <div className="bg-white min-h-screen flex flex-col justify-start text-center">
       {/* Navigation Bar */}
-      <nav className="w-full py-4 px-8 flex justify-between items-center border-b-2 shadow-md">
+      <nav className="w-full py-4 px-4 md:px-8 flex justify-between items-center border-b-2 shadow-md">
         <div className="text-4xl font-bold text-blue-600">Voters</div>
         <div className="relative">
           <button

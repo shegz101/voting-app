@@ -41,12 +41,6 @@ function SideNav() {
 
   let SideNavData: SideNavItem[] = [
     {
-      id: 3,
-      title: "Event Dashboard",
-      activeImage: <CalendarCheck2 />,
-      route: "/event/eventDb",
-    },
-    {
       id: 4,
       title: "Update",
       activeImage: <ShieldCheck />,
@@ -82,12 +76,18 @@ function SideNav() {
         activeImage: <LayoutGrid />,
         route: "/voting/creatingEvents",
       },
+      {
+        id: 3,
+        title: "Event Dashboard",
+        activeImage: <CalendarCheck2 />,
+        route: "/event/eventDb",
+      },
       ...SideNavData, // Keep the common items for both students and admins
     ];
   }
 
   return (
-    <div className="h-[90vh] w-1/4 fixed md:h-screen p-3 md:p-5 border-2 shadow-sm">
+    <div className="h-[100vh] md:w-1/4 w-[90vw] fixed p-3 md:p-5 border-2 shadow-sm z-50">
       <div className="text-4xl font-bold text-blue-600 pl-4">Voters</div>
       {SideNavData.map((data) => (
         <div

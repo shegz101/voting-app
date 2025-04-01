@@ -45,7 +45,7 @@ const StudentLogin: React.FC = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <div className="w-full sm:w-1/2 flex justify-center items-center">
+      <div className="w-full sm:w-1/2 hidden md:flex justify-center items-center">
         <Image
           objectFit="center"
           src={AuthBg}

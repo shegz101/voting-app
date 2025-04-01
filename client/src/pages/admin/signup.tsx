@@ -55,7 +55,7 @@ const AdminSignUp: React.FC = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <div className="w-full sm:w-1/2 flex justify-center items-center">
+      <div className="hidden w-full sm:w-1/2 md:flex justify-center items-center">
         <Image
           objectFit="cover"
           src={AuthBg}

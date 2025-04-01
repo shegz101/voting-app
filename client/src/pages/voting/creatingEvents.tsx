@@ -201,6 +201,13 @@ const CreatingEvents: React.FC = () => {
   const backgroundImage =
     "https://th.bing.com/th/id/R.39929737255c6eab4e446641e3b686d0?rik=%2bnI5kXHYss4Cag&riu=http%3a%2f%2f3.bp.blogspot.com%2f-FNx0QPPSHX8%2fUtGPXzJWfgI%2fAAAAAAAACTU%2fzyb7UwB6trE%2fs1600%2fGreen_Land_by_Deinha1974.jpg&ehk=idFLtB9d1vhQCwCvpvoCdfp6QbQPobLcC%2fCS7BUeJPs%3d&risl=&pid=ImgRaw&r=0";
 
+  const getTotalVoteForEvent = (event: any) => {
+    return event.candidates.reduce(
+      (total: number, candidate: any) => total + candidate.votes,
+      0
+    );
+  };
+
   function formatNumberWithCommas(number: number): string {
     return number.toLocaleString(); // This will automatically add commas to large numbers
   }
@@ -371,11 +378,11 @@ const CreatingEvents: React.FC = () => {
         </DialogContent>
       </Dialog>
 
-      <div className="flex flex-wrap gap-20 p-4">
+      <div className="flex flex-wrap gap-20 p-2 mt-4">
         {events.map((event, index) => (
           <div
             key={index}
-            className="w-[380px] cursor-pointer p-4 bg-cover bg-center rounded-lg"
+            className="w-[390px] cursor-pointer p-4 bg-cover bg-center rounded-lg"
             style={{
               backgroundImage: `url(${backgroundImage})`,
               backgroundSize: "cover",
@@ -398,10 +405,10 @@ const CreatingEvents: React.FC = () => {
                   <Clock3 />
                   {getTimeLeft(event.endTime)} hour(s) left
                 </p>
-                {/* <p className="flex gap-2 items-center">
+                <p className="flex gap-2 items-center">
                   <PersonStanding />{" "}
-                  {formatNumberWithCommas(event.no_of_voters)} voters
-                </p> */}
+                  {formatNumberWithCommas(getTotalVoteForEvent(event))} voters
+                </p>
               </div>
               <button
                 onClick={() => handleDelete(event._id)}

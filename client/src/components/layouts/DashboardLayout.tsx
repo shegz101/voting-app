@@ -10,7 +10,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   return (
     <div className="flex min-h-screen bg-white">
       {/* Side navigation component */}
-      <div className="w-1/4">
+      <div className="md:w-1/4 hidden md:block text-wrap">
         <SideNav />
       </div>
 
