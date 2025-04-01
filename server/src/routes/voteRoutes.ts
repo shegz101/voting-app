@@ -18,12 +18,12 @@ router.post ("/votes/:candidateId", async (req: Request, res: Response) => {
         //     }
         // });
         if (!voterId) {
-            res.status(400).json({ error: "voterId is required"});
+            res.status(400).json({ error: "voterId (matric number) is required"});
             return;
         }
 
         if (!mongoose.Types.ObjectId.isValid(candidateId)) {
-            res.status(400).json({ error: "Invalid candidateId"});
+            res.status(400).json({ error: "Invalid candidateId format"});
             return;
         }
 
@@ -53,7 +53,11 @@ router.post ("/votes/:candidateId", async (req: Request, res: Response) => {
         //     res.status(500).json({ error: "candidate does not have a valid category"});
         //     return;
         // }
-        const existingVote = await Voter.findOne({voterId, candidateId});
+        const candidateIdsInEvent = event.candidates.map((cand: any) => cand._id.toString());
+        const existingVote = await Voter.findOne({
+            voterId, 
+            candidateId: { $in: candidateIdsInEvent}
+        });
         if(existingVote) {
             res.status(400).json({error: "You have already voted in this category."});
             return
