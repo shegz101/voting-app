@@ -262,6 +262,8 @@ const CreatingEvents: React.FC = () => {
                       <Input
                         type="number"
                         placeholder="Hour"
+                        min="1"
+                        max="12"
                         value={time.hour}
                         onChange={(e) => handleTimeChange(e, "hour")}
                         className="w-1/4 sm:w-20"
@@ -270,6 +272,8 @@ const CreatingEvents: React.FC = () => {
                       <Input
                         type="number"
                         placeholder="Minute"
+                        min="1"
+                        max="59"
                         value={time.minute}
                         onChange={(e) => handleTimeChange(e, "minute")}
                         className="w-1/4 sm:w-20"

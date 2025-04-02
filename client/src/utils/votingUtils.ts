@@ -113,9 +113,17 @@ export const voteForCandidate = async (
   try {
     const apiUrl = `http://localhost:5000/api/votes/${candidateId}`;
 
-    const response = await axios.post(apiUrl, {
-      voterId,
-    });
+    // Define the headers
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    // Make the POST request with headers
+    const response = await axios.post(
+      apiUrl,
+      { voterId },
+      { headers } // Pass headers here
+    );
 
     // Return the response data (e.g., success message)
     return response.data;
@@ -125,6 +133,26 @@ export const voteForCandidate = async (
     throw error;
   }
 };
+
+// export const voteForCandidate = async (
+//   candidateId: string,
+//   voterId: string
+// ): Promise<any> => {
+//   try {
+//     const apiUrl = `http://localhost:5000/api/votes/${candidateId}`;
+
+//     const response = await axios.post(apiUrl, {
+//       voterId,
+//     });
+
+//     // Return the response data (e.g., success message)
+//     return response.data;
+//   } catch (error: any) {
+//     // Handle errors (e.g., network issues, API errors)
+//     console.error("Error voting for the candidate:", error);
+//     throw error;
+//   }
+// };
 
 // get votung event by id
 export const getAllVotingEvents = async (): Promise<any> => {

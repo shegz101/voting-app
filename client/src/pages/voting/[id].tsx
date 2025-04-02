@@ -88,9 +88,16 @@ const VotingDetails: React.FC = () => {
         setInterval(() => {
           router.push("/voting/votingEvents");
         }, 4000); // Log success message
+      } else {
+        toast.error(result?.message);
       }
     } catch (error) {
-      toast.error("Error voting for the candidate. Please try again.");
+      if (error instanceof Error) {
+        toast.error(error?.message || "Error logging in");
+      } else {
+        // Handle case where error isn't an instance of Error
+        toast.error("Error voting for the candidate. Please try again.");
+      }
     }
   };
 
