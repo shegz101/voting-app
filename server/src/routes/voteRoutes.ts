@@ -58,18 +58,19 @@ router.post ("/votes/:candidateId", async (req: Request, res: Response) => {
             res.status(404).json({ error: "Candidate not found in the event" });
             return;
         }
-        const candidatePosition = candidate.position;
-        if (!candidatePosition) {
-            res.status(500).json ({ error: "Candidate position is not defined" });
-        }
-        const candidateIdsForPosition = event.candidates
-        .filter((cand: any) => cand.position === candidatePosition)
-        .map((cand: any) => cand._id.toString());
+        // const candidatePosition = candidate.position;
+        // if (!candidatePosition) {
+        //     res.status(500).json ({ error: "Candidate position is not defined" });
+        // }
+    
+        // const candidateIdsForPosition = event.candidates
+        // .filter((cand: any) => cand.position === candidatePosition)
+        // .map((cand: any) => cand._id.toString());
+
         const existingVote = await Voter.findOne({
             voterId, 
-            candidateId: { $in: candidateIdsForPosition}
-        });
-        if(existingVote) {
+            candidateId});
+        if (existingVote) {
             res.status(400).json({error: "You have already voted in this category."});
             return
         }        
