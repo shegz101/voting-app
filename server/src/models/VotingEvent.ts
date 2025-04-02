@@ -40,6 +40,7 @@ const candidateSchema = new mongoose.Schema(
     manifesto: { type: String, default: "" },
     profilePic: { type: String, default: "" },
     votes: { type: Number, default: 0 },
+    // position: { type: String, required: true },
   },
   { _id: true } // each candidate gets its own _id
 );
