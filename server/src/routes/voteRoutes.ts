@@ -32,20 +32,19 @@ router.post("/votes/:candidateId", async (req: Request, res: Response):Promise<a
         eventId: eventIdStr 
     });
     if (existingVote) {
-        return res.status(400).json({error: "You have already voted in this category."});
+        return res.status(400).json({error: "You have already voted in this Event."});
     }   
     console.log(eventIdStr);
     console.log(candidateId);
     const newVote = new Voter({ voterId, candidateId, eventId: eventIdStr });
-    await newVote.save();
-    // try {
-        // await newVote.save();
-    //   } catch (err: any) {
-    //     if (err.code === 11000) {
-    //       return res.status(400).json({ error: "You have already voted in this event." });
-    //     }
-    //     throw err;
-    //   }
+    try {
+        await newVote.save();
+      } catch (err: any) {
+        if (err.code === 11000) {
+          return res.status(400).json({ error: "You have already voted in this event." });
+        }
+        throw err;
+      }
     const updatedEvent = await VotingEvent.findOneAndUpdate(
         {"candidates._id": candidateId},
         { $inc: { "candidates.$.votes": 1}},
