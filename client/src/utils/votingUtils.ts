@@ -128,8 +128,9 @@ export const voteForCandidate = async (
     // Return the response data (e.g., success message)
     return response.data;
   } catch (error: any) {
-    // Handle errors (e.g., network issues, API errors)
-    console.error("Error voting for the candidate:", error);
+    if (error.response.status == 400) {
+      console.error("Candidate already exist!");
+    }
     throw error;
   }
 };

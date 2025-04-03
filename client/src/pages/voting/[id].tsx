@@ -91,9 +91,10 @@ const VotingDetails: React.FC = () => {
       } else {
         toast.error(result?.message);
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error?.message || "Error logging in");
+    } catch (error: any) {
+      if (error?.response.status == 400) {
+        toast.error(error?.response.data.error);
+        console.log(error);
       } else {
         // Handle case where error isn't an instance of Error
         toast.error("Error voting for the candidate. Please try again.");
